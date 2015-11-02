@@ -1,0 +1,79 @@
+
+[ x | ] :drop def
+
+[ drop ] :comment def
+
+
+"## Handy Macros ##" comment
+
+[ q n | [ q match ] n def ] :mdef def
+
+[ call ] :; def 
+
+
+"## Stack Manipulation Operators ##" comment
+
+[ x | x x ] :dup def
+
+[ x y | y x ] :swap def
+
+[ y x f | y f call x ] :dip def
+
+[ x y | x y x ] :dipdup def
+
+[ x y z | z x y ] :rot def
+
+[[ x | clear ]] :clear mdef
+
+
+"## Numeric Operators ##" comment
+
+[ -1 * + ] :- def
+
+[ swap < ] :> def
+
+[ 1 + ] :++ def
+
+[ -1 + ] :-- def
+
+[ 1 swap [ [ dup ] dip * ] times-do swap drop ] :^ def
+
+
+"## String Operators ##" comment
+
+[ "" [ weld ] fold ] :multiWeld def
+
+
+"## Boolean Operators ##" comment
+
+[ x x | :true ] := def
+
+[ :true :true | :true ] :and def
+
+[[ :true x | :true ] [ x :true | :true ]] :or mdef
+
+[[ :true | :nil ] [ x | :true ]] :not mdef
+
+[ = not ] :!= def
+ 
+
+"## Control Flow ##" comment
+
+[[ :true x y | x call ] [ z x y | y call ]] :if mdef
+
+[[ 0 f | ] [ n f | f call n 1 - f times-do ]] :times-do mdef 
+
+[[ [] x f | x ] [ xs x f | xs >> x f call f fold ]] :fold mdef
+
+[[ [] f | [] ] [ xs f | xs >> [ f map ] dip f call << ]] :map mdef
+
+
+"## Quote Functions ##" comment
+
+[ [] [ swap << ] fold ] :reverse def
+
+[ reverse [ swap << ] fold reverse ] :concat def
+
+[ [] rot [ dup [ << ] dip ++ ] times-do drop ] :range def
+
+[ 1 swap range ] :iota def
