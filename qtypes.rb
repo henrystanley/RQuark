@@ -71,8 +71,12 @@ class QQuote
   end
 
   def qtype
-    pattern_type = @pattern.map { |i| i.qtype }.inject { |x, y| x == y ? x : :any } || :Empty
-    body_type = @body.map { |i| i.qtype }.inject { |x, y| x == y ? x : :any } || :Empty
+    pattern_type = (@pattern.map { |i| i.qtype }.inject { |x, y|
+      consistent_type(x, y)
+    }) || :Empty
+    body_type = (@body.map { |i| i.qtype }.inject { |x, y|
+      consistent_type(x, y)
+    }) || :Empty
     [:Quote, pattern_type, body_type]
   end
 
@@ -119,11 +123,19 @@ end
 def type_check(stack, type_sig)
   return false if stack.length < type_sig.length
   return true if type_sig.length == 0
-  stack_type = stack[-(type_sig.length)..-1].map(&:qtype)
+  stack_type = stack.last(type_sig.length).map(&:qtype)
   types_eq = type_sig.zip(stack_type)
     .map { |sig, type| type_match(sig, type) }
     .inject(true) { |a, b| a && b}
   return types_eq, type_sig, stack_type
+end
+
+# used to determine the inner types of quotes
+def consistent_type(x, y)
+  return x if y.nil?
+  if (x.is_a? Array) && (y.is_a? Array) && (x[0] == :Quote) && (y[0] == :Quote)
+    [:Quote, consistent_type(x[1], y[1]), consistent_type(x[2], y[2])]
+  else (x == y) ? x : :Any end
 end
 
 # converts a qtype to a qitem representation (used in the `type` function)
