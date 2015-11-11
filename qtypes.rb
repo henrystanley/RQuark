@@ -98,12 +98,10 @@ class QQuote
 
   # takes a hash of var strings to quark items and recursively subs its body
   def bind bindings
-    bindings.each do |k, v|
-      @body.map! do |x|
-        if x.is_a? QQuote then x.bind({k => v})
-        elsif x.is_a? QAtom then x.val == k ? v : x
-        else x end
-      end
+    @body.map! do |x|
+      if x.is_a? QQuote then x.bind bindings
+      elsif x.is_a? QAtom then bindings[x.val] || x
+      else x end
     end
     return self
   end
