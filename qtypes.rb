@@ -76,15 +76,7 @@ class QQuote
     else false end
   end
 
-  def qtype
-    pattern_type = (@pattern.map { |i| i.qtype }.inject { |x, y|
-      consistent_type(x, y)
-    }) || :Empty
-    body_type = (@body.map { |i| i.qtype }.inject { |x, y|
-      consistent_type(x, y)
-    }) || :Empty
-    [:Quote, pattern_type, body_type]
-  end
+  def qtype; :Quote end
 
   # pushes to quote body
   def push x
@@ -115,11 +107,7 @@ end
 # type comparison is not symmetric
 # `a` is the signature type, so (:Any, :Empty) will match, but (:Empty, :Any) won't
 def type_match(a, b)
-  return true if (a == :Any)
-  return true if (a == :NotEmpty) && (b != :Empty)
-  if (a.is_a? Array) && (b.is_a? Array) && (a[0] == :Quote) && (b[0] == :Quote)
-    return (type_match(a[1], b[1]) && type_match(a[2], b[2]))
-  end
+  return true if a == :Any
   a == b
 end
 
@@ -134,16 +122,7 @@ def type_check(stack, type_sig)
   return types_eq, type_sig, stack_type
 end
 
-# used to determine the inner types of quotes
-def consistent_type(x, y)
-  return x if y.nil?
-  if (x.is_a? Array) && (y.is_a? Array) && (x[0] == :Quote) && (y[0] == :Quote)
-    [:Quote, consistent_type(x[1], y[1]), consistent_type(x[2], y[2])]
-  else (x == y) ? x : :Any end
-end
-
 # converts a qtype to a qitem representation (used in the `type` function)
 def type_to_qitem t
-  return QSym.new(t.to_s) if t.is_a? Symbol
-  QQuote.new([], t.map { |x| type_to_qitem x })
+  return QSym.new(t.to_s)
 end

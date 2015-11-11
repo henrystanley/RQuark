@@ -70,19 +70,19 @@ def_cf('.', []) do |vm|
   puts vm.stack.join(' ')
 end
 
-def_cf('>>', [[:Quote, :Any, :NotEmpty]]) do |vm|
+def_cf('>>', [:Quote]) do |vm|
   vm.stack.push vm.stack.last.pop
 end
 
-def_cf('<<', [[:Quote, :Any, :Any], :Any]) do |vm|
+def_cf('<<', [:Quote, :Any]) do |vm|
   vm.stack[-2].push vm.stack.pop
 end
 
-def_cf('@>', [[:Quote, :NotEmpty, :Any]]) do |vm|
+def_cf('@>', [:Quote]) do |vm|
   vm.stack.push vm.stack.last.pattern.pop
 end
 
-def_cf('<@', [[:Quote, :Any, :Any], :Any]) do |vm|
+def_cf('<@', [:Quote, :Any]) do |vm|
   vm.stack[-2].pattern.push vm.stack.pop
 end
 
@@ -90,7 +90,7 @@ def_cf('show', [:Any]) do |vm|
   vm.stack.push QStr.new(vm.stack.pop.to_s)
 end
 
-def_cf('call', [[:Quote, :Any, :Any]]) do |vm|
+def_cf('call', [:Quote]) do |vm|
   quote = vm.stack.pop
   args = vm.stack.pop(quote.pattern.length)
   if bindings=pattern_match(args, quote.pattern)
@@ -98,7 +98,7 @@ def_cf('call', [[:Quote, :Any, :Any]]) do |vm|
   else vm.stack.push QSym.new('nil') end
 end
 
-def_cf('match', [[:Quote, :Empty, [:Quote, :Any, :Any]]]) do |vm|
+def_cf('match', [:Quote]) do |vm|
   quotes = vm.stack.pop.body
   quotes.each do |q|
     if bindings=pattern_match(vm.stack.last(q.pattern.length), q.pattern)
@@ -120,7 +120,7 @@ def_cf('weld', [:Str, :Str]) do |vm|
   vm.stack.push QStr.new(string_b + string_a)
 end
 
-def_cf('def', [[:Quote, :Any, :Any], :Sym]) do |vm|
+def_cf('def', [:Quote, :Sym]) do |vm|
   name = vm.stack.pop.val
   quote = vm.stack.pop
   vm.bindings[name] = quote
