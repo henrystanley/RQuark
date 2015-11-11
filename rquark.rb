@@ -37,8 +37,12 @@ def qrepl(vm)
       case input.strip
       when '*q'
         exit!
-      when '*b'
-        vm.bindings.each { |k, v| puts "#{k} = #{v.to_s}"}
+      when '*f'
+        vm.bindings.sort.each { |k, v| puts "#{k}\n    #{v.to_s}\n\n"}
+      when /\*f\s+(.+)/
+        if vm.bindings.has_key? $1
+          puts vm.bindings[$1]
+        else puts "No such function: #{$1}" end
       else
         vm = qrun(input, vm.stack.dup, vm.bindings.dup)
       end
