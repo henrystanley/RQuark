@@ -29,8 +29,7 @@ def qreduce vm
   return vm
 end
 
-def qrepl
-  vm = QVM.new([], [], {})
+def qrepl(vm)
   loop do
     print ':> '
     begin
@@ -49,4 +48,22 @@ def qrepl
   end
 end
 
-qrepl
+## Main ##
+
+# setup base vm
+base_vm = QVM.new([], [], {})
+unless ARGV.include? '--only-core'
+  base_vm = qrun(File.read 'prelude.qrk')
+end
+
+# get script filenames
+script_names = ARGV.select { |a| a[0] != '-' }
+
+# run either REPL or scripts
+if script_names.empty?
+  qrepl base_vm
+else
+  script_names.each do |s|
+    qrun(File.read(s), base_vm.stack.dup, base_vm.bindings.dup)
+  end
+end

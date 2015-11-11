@@ -70,6 +70,12 @@ class QQuote
     Marshal.load(Marshal.dump(self))
   end
 
+  def ==(x)
+    if x.is_a? QQuote
+      (@pattern == x.pattern) && (@body == x.body)
+    else false end
+  end
+
   def qtype
     pattern_type = (@pattern.map { |i| i.qtype }.inject { |x, y|
       consistent_type(x, y)

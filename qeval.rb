@@ -99,7 +99,7 @@ def_cf('call', [[:Quote, :Any, :Any]]) do |vm|
 end
 
 def_cf('match', [[:Quote, :Empty, [:Quote, :Any, :Any]]]) do |vm|
-  quotes = vm.stack.pop.body.reverse
+  quotes = vm.stack.pop.body
   quotes.each do |q|
     if bindings=pattern_match(vm.stack.last(q.pattern.length), q.pattern)
       vm.stack.pop(q.pattern.length)
