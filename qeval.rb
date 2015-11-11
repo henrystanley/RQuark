@@ -78,12 +78,15 @@ def_cf('<<', [:Quote, :Any]) do |vm|
   vm.stack[-2].push vm.stack.pop
 end
 
-def_cf('@>', [:Quote]) do |vm|
-  vm.stack.push vm.stack.last.pattern.pop
+def_cf('@+', [:Quote, :Quote]) do |vm|
+  q1, q2 = vm.stack.pop(2)
+  vm.stack.push QQuote.new q1.body, q2.body
 end
 
-def_cf('<@', [:Quote, :Any]) do |vm|
-  vm.stack[-2].pattern.push vm.stack.pop
+def_cf('@-', [:Quote]) do |vm|
+  q = vm.stack.pop
+  vm.stack.push QQuote.new [], q.pattern
+  vm.stack.push QQuote.new [], q.body
 end
 
 def_cf('show', [:Any]) do |vm|
