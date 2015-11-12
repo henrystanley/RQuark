@@ -70,7 +70,7 @@ class QQuote
     return "[]" if @body.empty? and @pattern.empty?
     serialize = lambda do |arr|
       xs = n ? arr.first(n) : arr
-      xs.map { |x| x.is_a?(QQuote) ? x.to_s(n) : x.to_s }.join(' ') + (arr.length > n ? ' ...' : '')
+      xs.map { |x| x.is_a?(QQuote) ? x.to_s(n) : x.to_s }.join(' ') + (n && arr.length > n ? ' ...' : '')
     end
     pattern_str = " #{serialize.call(@pattern)} |" if !@pattern.empty?
     body_str = " #{serialize.call(@body)} " if !@body.empty?
