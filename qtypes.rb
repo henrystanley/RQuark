@@ -23,6 +23,11 @@ end
 
 # quark numbers
 class QNum < QVal
+
+  def to_s
+    @val.to_i == @val ? @val.to_i.to_s : @val.to_s
+  end
+
   def qtype; :Num end
 end
 
@@ -62,6 +67,7 @@ class QQuote
   end
 
   def to_s
+    return "[]" if @body.empty? and @pattern.empty?
     return "[ #{@body.join(' ')} ]" if @pattern.empty?
     "[ #{@pattern.join(' ')} | #{@body.join(' ')} ]"
   end
