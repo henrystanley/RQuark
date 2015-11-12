@@ -146,16 +146,31 @@ def_cf('type', [:Any]) do |vm|
 end
 
 def_cf('load', [:Str]) do |vm|
-  vm.stack.push QStr.new(File.read(vm.stack.pop.val))
+  begin
+    vm.stack.push QStr.new(File.read(vm.stack.pop.val))
+    vm.stack.push QSym.new 'ok'
+  rescue
+    vm.stack.push QSym.new 'not-ok'
+  end
 end
 
 def_cf('cmd', [:Str]) do |vm|
-  vm.stack.push QStr.new(IO.popen(vm.stack.pop.val).read)
+  begin
+    vm.stack.push QStr.new(IO.popen(vm.stack.pop.val).read)
+    vm.stack.push QSym.new 'ok'
+  rescue
+    vm.stack.push QSym.new 'not-ok'
+  end
 end
 
 def_cf('write', [:Str, :Str]) do |vm|
-  filename, content = vm.stack.pop.val, vm.stack.pop.val
-  File.open(filename, 'w+') { |f| f << content }
+  begin
+    filename, content = vm.stack.pop.val, vm.stack.pop.val
+    File.open(filename, 'w+') { |f| f << content }
+    vm.stack.push QSym.new 'ok'
+  rescue
+    vm.stack.push QSym.new 'not-ok'
+  end
 end
 
 def_cf('exit', []) do |vm|
