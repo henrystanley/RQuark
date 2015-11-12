@@ -66,10 +66,15 @@ class QQuote
     @body = b
   end
 
-  def to_s
+  def to_s(n=nil)
     return "[]" if @body.empty? and @pattern.empty?
-    return "[ #{@body.join(' ')} ]" if @pattern.empty?
-    "[ #{@pattern.join(' ')} | #{@body.join(' ')} ]"
+    serialize = lambda do |arr|
+      xs = n ? arr.first(n) : arr
+      xs.map { |x| x.is_a?(QQuote) ? x.to_s(n) : x.to_s }.join(' ') + (arr.length > n ? ' ...' : '')
+    end
+    pattern_str = " #{serialize.call(@pattern)} |" if !@pattern.empty?
+    body_str = " #{serialize.call(@body)} " if !@body.empty?
+    "[#{pattern_str}#{body_str}]"
   end
 
   def dup

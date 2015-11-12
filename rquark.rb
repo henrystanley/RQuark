@@ -46,6 +46,7 @@ def qrepl(vm)
       else
         vm = qrun(input, vm.stack.dup, vm.bindings.dup)
       end
+      puts vm.stack.map { |x| x.is_a?(QQuote) ? x.to_s(20) : x.to_s }.join(' ')
     rescue Exception => e
       puts e
     end
