@@ -6,7 +6,7 @@ require_relative '../lib/qrun'
 # setup base vm
 base_vm = QVM.new([], [], {})
 unless ARGV.include? '--only-core'
-  base_vm = qrun(File.read 'prelude.qrk')
+  base_vm = qrun(File.read '../lib/prelude.qrk')
 end
 
 # get script filenames
