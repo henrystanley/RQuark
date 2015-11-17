@@ -1,6 +1,6 @@
-require_relative 'qtypes'
-require_relative 'qparse'
-require_relative 'qeval'
+require 'qtypes'
+require 'qparse'
+require 'qeval'
 
 ## Evaluation ##
 

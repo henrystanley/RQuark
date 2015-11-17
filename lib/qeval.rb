@@ -1,4 +1,4 @@
-require_relative 'qtypes'
+require 'qtypes'
 
 ## Boilerplate ##
 

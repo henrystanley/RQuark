@@ -1,5 +1,5 @@
 require 'parslet'
-require_relative 'qtypes'
+require 'qtypes'
 
 ## Parsing ##
 
