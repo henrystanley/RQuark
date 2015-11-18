@@ -14,13 +14,14 @@ def qreduce vm
   until vm.program.empty?
     item = vm.program.shift
     if item.is_a? QAtom
-      if $core_func.has_key? item.val
-        apply_core_func(item.val, vm, ->(*x){qrun(*x)})
-      elsif vm.bindings.has_key? item.val
-        quote = vm.bindings[item.val]
+      f_name = item.val.strip
+      if $core_func.has_key? f_name
+        apply_core_func(f_name, vm, ->(*x){qrun(*x)})
+      elsif vm.bindings.has_key? f_name
+        quote = vm.bindings[f_name]
         vm.program.unshift(*[quote.dup, QAtom.new('call')])
       else
-        raise QuarkError, "No such function: #{item}"
+        raise QuarkError, "No such function: #{f_name}"
       end
     else
       vm.stack.push item
