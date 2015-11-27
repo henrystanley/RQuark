@@ -131,12 +131,12 @@ def_cf('def', [:Quote, :Sym]) do |vm|
 end
 
 def_cf('parse', [:Str]) do |vm|
-  begin
-    parse_str = vm.stack.pop.val
-    vm.stack.push QQuote.new([], qparse(parse_str))
-    vm.stack.push QSym.new('ok')
-  rescue
+  parsed = qparse vm.stack.pop.val
+  if parsed.is_a? String
     vm.stack.push QSym.new('not-ok')
+  else
+    vm.stack.push QQuote.new([], parsed)
+    vm.stack.push QSym.new('ok')
   end
 end
 
