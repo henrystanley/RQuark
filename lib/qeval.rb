@@ -1,4 +1,5 @@
 require 'qtypes'
+require 'qparse'
 
 ## Boilerplate ##
 
@@ -12,10 +13,10 @@ def def_cf(name, type_sig, &code)
   $core_func[name] = code
 end
 
-def apply_core_func(name, vm, eval_func)
+def apply_core_func(name, vm)
   eq, expected, got = type_check(vm.stack, $core_func_type[name])
   raise(QuarkError, "Type error with function #{name}\n  expected a stack of #{expected}\n  but got #{got}") if not eq
-  $core_func[name].call(vm, eval_func)
+  $core_func[name].call(vm)
 end
 
 def apply_runtime_func(name, vm)
@@ -129,11 +130,10 @@ def_cf('def', [:Quote, :Sym]) do |vm|
   vm.bindings[name] = quote
 end
 
-def_cf('eval', [:Str]) do |vm, eval_func|
+def_cf('parse', [:Str]) do |vm|
   begin
-    eval_str = vm.stack.pop.val
-    vm2 = eval_func.call(eval_str, vm.stack.dup, vm.bindings.dup)
-    vm.stack, vm.bindings = vm2.stack, vm2.bindings
+    parse_str = vm.stack.pop.val
+    vm.stack.push QQuote.new([], qparse(parse_str))
     vm.stack.push QSym.new('ok')
   rescue
     vm.stack.push QSym.new('not-ok')

@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
 
   s.name        = 'rquark'
-  s.version     = '0.1.2'
+  s.version     = '0.1.3'
   s.summary     = 'Quark, A Functional, Purely Homoiconic, Concatenative Language'
   s.description = 'This is a ruby implementation of the Quark language'
   s.homepage    = 'http://kdt.io/~/quark'

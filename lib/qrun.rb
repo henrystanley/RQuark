@@ -16,7 +16,7 @@ def qreduce vm
     if item.is_a? QAtom
       f_name = item.val.strip
       if $core_func.has_key? f_name
-        apply_core_func(f_name, vm, ->(*x){qrun(*x)})
+        apply_core_func(f_name, vm)
       elsif vm.bindings.has_key? f_name
         quote = vm.bindings[f_name]
         vm.program.unshift(*[quote.dup, QAtom.new('call')])
